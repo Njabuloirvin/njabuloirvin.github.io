@@ -38,6 +38,22 @@ body{
   justify-content:center;
   padding:48px 20px;
   text-align:center;
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.center.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.center.fade-in {
+  animation: fadeInContent 0.8s ease-in-out;
+}
+
+@keyframes fadeInContent {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* profile */
@@ -101,6 +117,183 @@ body{
 
 /* small footer */
 .small{ margin-top:22px; color:var(--muted); font-size:13px; letter-spacing:1px }
+
+/* 3D Photo Modal */
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.photo-modal.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.photo-3d-wrapper {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.photo-3d {
+  width: clamp(150px, 50vw, 320px);
+  height: clamp(150px, 50vw, 320px);
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.1);
+  animation: photo3dPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 0.3s ease;
+}
+
+.photo-3d:hover {
+  transform: rotateX(-5deg) rotateY(5deg);
+}
+
+@keyframes photo3dPop {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotateX(90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(0deg);
+  }
+}
+
+.photo-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  animation: slideUp 0.6s ease-out 0.3s both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.rotating-icons-circle {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-loader {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: orbit 3s linear infinite;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(70px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(70px) rotate(-360deg);
+  }
+}
+
+/* Stagger animation start for each icon */
+.icon-loader:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.icon-loader:nth-child(2) {
+  animation-delay: -0.75s;
+}
+
+.icon-loader:nth-child(3) {
+  animation-delay: -1.5s;
+}
+
+.icon-loader:nth-child(4) {
+  animation-delay: -2.25s;
+}
+
+.icon-loader svg {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+/* Platform icon colors during loading */
+.icon-loader.whatsapp svg { color: #25D366; }
+.icon-loader.telegram svg { color: #2AABEE; }
+.icon-loader.facebook svg { color: #4267B2; }
+.icon-loader.email svg { color: #EA4335; }
+
+.loading-text {
+  font-size: 16px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
 /* responsive tweaks */
 @media (min-width:900px){
