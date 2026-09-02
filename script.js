@@ -113,3 +113,47 @@ function draw(){
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
+
+/* ===== 3D Photo Popup & Loading Animation ===== */
+
+const photoModal = document.getElementById('photoModal');
+const loadingScreen = document.getElementById('loadingScreen');
+const mainContent = document.getElementById('mainContent');
+const photoImage = document.getElementById('photoImage');
+
+// Check if user has seen the popup before
+const POPUP_SEEN_KEY = 'njabuloLinkTreeVisited';
+
+function closePhotoModal() {
+  photoModal.classList.add('hidden');
+  showLoadingAnimation();
+}
+
+function showLoadingAnimation() {
+  loadingScreen.classList.remove('hidden');
+  
+  // Rotate icons for 2.5 seconds then fade out
+  setTimeout(() => {
+    loadingScreen.classList.add('hidden');
+    mainContent.classList.add('fade-in');
+    mainContent.classList.remove('fade-out');
+    localStorage.setItem(POPUP_SEEN_KEY, 'true');
+  }, 2500);
+}
+
+// Initialize on page load
+window.addEventListener('load', () => {
+  const hasVisited = localStorage.getItem(POPUP_SEEN_KEY);
+  
+  if (!hasVisited) {
+    // Show photo popup first
+    photoModal.classList.remove('hidden');
+    
+    // Close modal on click anywhere
+    photoModal.addEventListener('click', closePhotoModal);
+  } else {
+    // Skip to showing content if already visited
+    mainContent.classList.remove('fade-out');
+    mainContent.style.opacity = '1';
+  }
+});
