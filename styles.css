@@ -68,48 +68,103 @@ body{
 /* links area */
 .links{
   display:flex;
-  gap:12px;
+  gap:16px;
   flex-direction:column;
-  width:min(420px,92vw);
-  align-items:center;
+  width:min(500px,90vw);
+  align-items:stretch;
   justify-content:center;
-  margin-bottom:20px;
+  margin-bottom:40px;
 }
 
 .link-btn{
   width:100%;
   height:56px;
-  display:inline-flex;
+  display:flex;
   align-items:center;
-  gap:12px;
-  justify-content:center;
-  padding:0 24px;
+  gap:14px;
+  justify-content:flex-start;
+  padding:0 20px;
   border-radius:12px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-  border:1px solid rgba(255,255,255,0.03);
+  background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.1);
   color:#fff;
   text-decoration:none;
   font-weight:600;
-  font-size:14px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.01);
-  transition: transform .12s ease, box-shadow .12s ease;
+  font-size:15px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transition: all .2s ease;
+  cursor:pointer;
 }
 
-.link-btn:hover{ transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.85) }
+.link-btn:hover{
+  transform: translateY(-2px);
+  background:linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+  border-color:rgba(255,255,255,0.15);
+}
 
-.link-btn svg{ fill:currentColor; opacity:0.95 }
+.link-btn:active{
+  transform: translateY(0);
+}
+
+.link-btn svg{ 
+  width:24px;
+  height:24px;
+  flex-shrink:0;
+  fill:currentColor; 
+  opacity:1;
+}
 
 /* platform colors (native-like) */
-.link-btn.whatsapp{ background: linear-gradient(180deg, #25D366, #0e8a65); color: #fff }
-.link-btn.telegram{ background: linear-gradient(180deg, #2AABEE, #1590D6); color: #032A39 }
-.link-btn.facebook{ background: linear-gradient(180deg, #4267B2, #324E8A); color: #fff }
-.link-btn.youtube{ background: linear-gradient(180deg, #FF0000, #CC0000); color: #fff }
-.link-btn.email{ background: linear-gradient(180deg, #EA4335, #D93025); color: #fff }
+.link-btn.whatsapp{ 
+  background: linear-gradient(135deg, #25D366, #1ba85c);
+  border-color: rgba(37,211,102,0.4);
+}
+.link-btn.whatsapp:hover{
+  background: linear-gradient(135deg, #2dd570, #22bf62);
+  box-shadow: 0 12px 48px rgba(37,211,102,0.3);
+}
+
+.link-btn.telegram{ 
+  background: linear-gradient(135deg, #2AABEE, #0096d6);
+  border-color: rgba(42,171,238,0.4);
+}
+.link-btn.telegram:hover{
+  background: linear-gradient(135deg, #36b5f5, #1ba3e8);
+  box-shadow: 0 12px 48px rgba(42,171,238,0.3);
+}
+
+.link-btn.facebook{ 
+  background: linear-gradient(135deg, #4267B2, #365899);
+  border-color: rgba(66,103,178,0.4);
+}
+.link-btn.facebook:hover{
+  background: linear-gradient(135deg, #4d72bf, #3f5fa8);
+  box-shadow: 0 12px 48px rgba(66,103,178,0.3);
+}
+
+.link-btn.youtube{ 
+  background: linear-gradient(135deg, #FF0000, #CC0000);
+  border-color: rgba(255,0,0,0.4);
+}
+.link-btn.youtube:hover{
+  background: linear-gradient(135deg, #ff3333, #e60000);
+  box-shadow: 0 12px 48px rgba(255,0,0,0.3);
+}
+
+.link-btn.email{ 
+  background: linear-gradient(135deg, #EA4335, #d23321);
+  border-color: rgba(234,67,53,0.4);
+}
+.link-btn.email:hover{
+  background: linear-gradient(135deg, #f1544f, #f05345);
+  box-shadow: 0 12px 48px rgba(234,67,53,0.3);
+}
 
 /* small footer */
 .small{ margin-top:22px; color:var(--muted); font-size:13px; letter-spacing:1px }
 
 /* responsive tweaks */
 @media (min-width:900px){
-  .links{ width:360px }
+  .links{ width:500px }
 }
