@@ -1,71 +1,121 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Njabulo Irvin Shongwe — Links</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="description" content="Links for Njabulo Irvin Shongwe" />
-</head>
-<body>
-  <canvas id="sky"></canvas>
+// improved starfield + natural shooting stars
+const canvas = document.getElementById('sky');
+const ctx = canvas.getContext('2d', { alpha: true });
+let w, h, stars = [], shooting = [], nextShootingTimeout = null;
 
-  <main class="center">
-    <!-- Profile Section -->
-    <section class="profile">
-      <div class="avatar-wrap">
-        <img src="avatar.png" alt="Njabulo Irvin Shongwe" class="avatar">
-      </div>
-      <h1 class="name">NJABULO IRVIN SHONGWE</h1>
-    </section>
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
 
-    <!-- Links Section at Bottom -->
-    <section class="links" aria-label="Links">
-      <!-- WhatsApp -->
-      <a class="link-btn whatsapp" href="https://wa.me/27637991047?text=Hi%20Njabulo" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M20.52 3.48A11.91 11.91 0 0012 0C5.37 0 .01 5.36.01 12a11.9 11.9 0 001.93 6.4L0 24l5.77-1.88A11.95 11.95 0 0012 24c6.63 0 12-5.36 12-12 0-3.2-1.25-6.21-3.48-[...]"
-        </svg>
-        WhatsApp
-      </a>
+// create star objects
+function initStars() {
+  stars = [];
+  const STAR_COUNT = Math.round((w * h) / 7000);
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.2 + 0.3,
+      alpha: Math.random() * 0.8 + 0.2,
+      pulse: Math.random() * 0.01 + 0.002,
+      dir: Math.random() > 0.5 ? 1 : -1
+    });
+  }
+}
+initStars();
+window.addEventListener('resize', () => {
+  initStars();
+  scheduleNextShooting();
+});
 
-      <!-- Telegram -->
-      <a class="link-btn telegram" href="https://t.me/NjabuloIshongwe" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M21.5 3.1L2.9 9.6c-.8.3-.8 1.2.1 1.5l4.3 1.4 1.6 5.1c.3 1 .9 1 1.6.6l2.9-2.1 3.8 2.8c.7.5 1.3.2 1.5-.7L23 4.3c.2-1-.6-1.6-1.5-1.2z"/>
-        </svg>
-        Telegram
-      </a>
+// schedule sporadic shooting stars
+function scheduleNextShooting() {
+  if (nextShootingTimeout) clearTimeout(nextShootingTimeout);
+  const delay = 2500 + Math.random() * 7000; // 2.5s - 9.5s
+  nextShootingTimeout = setTimeout(() => {
+    spawnShootingStar();
+    scheduleNextShooting();
+  }, delay);
+}
+scheduleNextShooting();
 
-      <!-- Facebook -->
-      <a class="link-btn facebook" href="https://www.facebook.com/NjabuloIrvinShongwe" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M22 12a10 10 0 10-11.5 9.9v-7h-2.2V12h2.2V9.4c0-2.2 1.3-3.4 3.2-3.4.9 0 1.9.1 1.9.1v2.1h-1.1c-1.1 0-1.4.7-1.4 1.4V12h2.4l-.4 2.9h-2v7A10 10 0 0022 12z"/>
-        </svg>
-        Facebook
-      </a>
+function spawnShootingStar() {
+  const startX = Math.random() * w;
+  const startY = Math.random() * h * 0.45;
+  const speed = 6 + Math.random() * 6;
+  const angle = (Math.PI / 4) + (Math.random() * 0.3 - 0.15);
+  const vx = -Math.cos(angle) * speed;
+  const vy = Math.sin(angle) * speed;
+  const len = 30 + Math.random() * 60;
+  shooting.push({
+    x: startX,
+    y: startY,
+    vx,
+    vy,
+    len,
+    life: 0,
+    maxLife: 12 + Math.floor(Math.random() * 10),
+    alpha: 1
+  });
+}
 
-      <!-- YouTube -->
-      <a class="link-btn youtube" href="https://www.youtube.com/@Njabuloishongwe" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a[...]"/>
-        </svg>
-        YouTube
-      </a>
+// draw loop
+function draw() {
+  ctx.clearRect(0, 0, w, h);
 
-      <!-- Email -->
-      <a class="link-btn email" href="mailto:njabuloirvin1047@gmail.com" target="_blank" rel="noopener noreferrer">
-        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-        </svg>
-        Email
-      </a>
-    </section>
-  </main>
+  // subtle gradient glow
+  const g = ctx.createRadialGradient(w * 0.5, h * 0.28, 0, w * 0.5, h * 0.28, Math.max(w, h));
+  g.addColorStop(0, 'rgba(255,255,255,0.02)');
+  g.addColorStop(1, 'rgba(0,0,0,0.0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
 
-  <script src="script.js"></script>
-</body>
-</html>
+  // draw stars with gentle twinkle
+  for (let s of stars) {
+    s.alpha += s.pulse * s.dir;
+    if (s.alpha <= 0.12 || s.alpha >= 1) s.dir *= -1;
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // draw shooting stars
+  for (let i = shooting.length - 1; i >= 0; i--) {
+    const sh = shooting[i];
+    sh.x += sh.vx;
+    sh.y += sh.vy;
+    sh.life++;
+    sh.alpha = Math.max(0, 1 - sh.life / sh.maxLife);
+
+    const tx = sh.x - sh.vx * sh.len;
+    const ty = sh.y - sh.vy * sh.len;
+    const grad = ctx.createLinearGradient(sh.x, sh.y, tx, ty);
+    grad.addColorStop(0, `rgba(255,255,255,${0.95 * sh.alpha})`);
+    grad.addColorStop(0.6, `rgba(255,255,255,${0.25 * sh.alpha})`);
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(sh.x, sh.y);
+    ctx.lineTo(tx, ty);
+    ctx.stroke();
+
+    // bright head
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(255,255,255,${sh.alpha})`;
+    ctx.arc(sh.x, sh.y, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (sh.life > sh.maxLife || sh.x < -50 || sh.y > h + 50) {
+      shooting.splice(i, 1);
+    }
+  }
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
