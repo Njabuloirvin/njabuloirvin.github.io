@@ -69,8 +69,7 @@ body{
 .links{
   display:flex;
   gap:12px;
-  flex-direction:row;
-  flex-wrap:wrap;
+  flex-direction:column;
   width:min(420px,92vw);
   align-items:center;
   justify-content:center;
@@ -78,20 +77,20 @@ body{
 }
 
 .link-btn{
-  width:56px;
+  width:100%;
   height:56px;
   display:inline-flex;
   align-items:center;
-  gap:0;
+  gap:12px;
   justify-content:center;
-  padding:0;
+  padding:0 24px;
   border-radius:12px;
   background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
   border:1px solid rgba(255,255,255,0.03);
   color:#fff;
   text-decoration:none;
   font-weight:600;
-  font-size:0;
+  font-size:14px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.01);
   transition: transform .12s ease, box-shadow .12s ease;
 }
