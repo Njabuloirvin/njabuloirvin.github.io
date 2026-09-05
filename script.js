@@ -1,4 +1,3 @@
-// improved starfield + natural shooting stars
 const canvas = document.getElementById('sky');
 const ctx = canvas.getContext('2d', { alpha: true });
 let w, h, stars = [], shooting = [], nextShootingTimeout = null;
@@ -10,7 +9,6 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// create star objects
 function initStars() {
   stars = [];
   const STAR_COUNT = Math.round((w * h) / 7000);
@@ -31,10 +29,9 @@ window.addEventListener('resize', () => {
   scheduleNextShooting();
 });
 
-// schedule sporadic shooting stars
 function scheduleNextShooting() {
   if (nextShootingTimeout) clearTimeout(nextShootingTimeout);
-  const delay = 2500 + Math.random() * 7000; // 2.5s - 9.5s
+  const delay = 2500 + Math.random() * 7000;
   nextShootingTimeout = setTimeout(() => {
     spawnShootingStar();
     scheduleNextShooting();
@@ -51,29 +48,20 @@ function spawnShootingStar() {
   const vy = Math.sin(angle) * speed;
   const len = 30 + Math.random() * 60;
   shooting.push({
-    x: startX,
-    y: startY,
-    vx,
-    vy,
-    len,
-    life: 0,
-    maxLife: 12 + Math.floor(Math.random() * 10),
-    alpha: 1
+    x: startX, y: startY, vx, vy, len,
+    life: 0, maxLife: 12 + Math.floor(Math.random() * 10), alpha: 1
   });
 }
 
-// draw loop
 function draw() {
   ctx.clearRect(0, 0, w, h);
 
-  // subtle gradient glow
   const g = ctx.createRadialGradient(w * 0.5, h * 0.28, 0, w * 0.5, h * 0.28, Math.max(w, h));
   g.addColorStop(0, 'rgba(255,255,255,0.02)');
-  g.addColorStop(1, 'rgba(0,0,0,0.0)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
 
-  // draw stars with gentle twinkle
   for (let s of stars) {
     s.alpha += s.pulse * s.dir;
     if (s.alpha <= 0.12 || s.alpha >= 1) s.dir *= -1;
@@ -83,7 +71,6 @@ function draw() {
     ctx.fill();
   }
 
-  // draw shooting stars
   for (let i = shooting.length - 1; i >= 0; i--) {
     const sh = shooting[i];
     sh.x += sh.vx;
@@ -105,7 +92,6 @@ function draw() {
     ctx.lineTo(tx, ty);
     ctx.stroke();
 
-    // bright head
     ctx.beginPath();
     ctx.fillStyle = `rgba(255,255,255,${sh.alpha})`;
     ctx.arc(sh.x, sh.y, 1.8, 0, Math.PI * 2);
