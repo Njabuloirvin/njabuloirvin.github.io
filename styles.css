@@ -63,6 +63,7 @@ body{
   letter-spacing:2px;
   text-shadow: 0 6px 24px rgba(0,0,0,0.8);
   font-weight:700;
+  white-space: nowrap;
 }
 
 /* links area */
@@ -167,4 +168,4 @@ body{
 /* responsive tweaks */
 @media (min-width:900px){
   .links{ width:500px }
-}
+  }
