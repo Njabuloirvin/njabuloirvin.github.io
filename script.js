@@ -31,7 +31,7 @@ window.addEventListener('resize', () => {
   scheduleNextShooting();
 });
 
-// schedule sporadic shooting stars (mimic natural intervals)
+// schedule sporadic shooting stars
 function scheduleNextShooting(){
   if(nextShootingTimeout) clearTimeout(nextShootingTimeout);
   const delay = 2500 + Math.random()*7000; // 2.5s - 9.5s
@@ -43,14 +43,13 @@ function scheduleNextShooting(){
 scheduleNextShooting();
 
 function spawnShootingStar(){
-  // pick a start near top-right so they travel diagonally down-left
   const startX = Math.random()*w;
-  const startY = Math.random()*h*0.45; // mostly upper half
-  const speed = 6 + Math.random()*6; // faster so streak is quick
-  const angle = (Math.PI/4) + (Math.random()*0.3 - 0.15); // ~45 degrees
+  const startY = Math.random()*h*0.45;
+  const speed = 6 + Math.random()*6;
+  const angle = (Math.PI/4) + (Math.random()*0.3 - 0.15);
   const vx = -Math.cos(angle) * speed;
   const vy = Math.sin(angle) * speed;
-  const len = 30 + Math.random()*60; // short streaks
+  const len = 30 + Math.random()*60;
   shooting.push({ x: startX, y: startY, vx, vy, len, life:0, maxLife: 12 + Math.floor(Math.random()*10), alpha: 1 });
 }
 
@@ -58,7 +57,7 @@ function spawnShootingStar(){
 function draw(){
   ctx.clearRect(0,0,w,h);
 
-  // subtle gradient glow in center to simulate faint moonlight
+  // subtle gradient glow
   const g = ctx.createRadialGradient(w*0.5,h*0.28,0, w*0.5,h*0.28, Math.max(w,h));
   g.addColorStop(0, 'rgba(255,255,255,0.02)');
   g.addColorStop(1, 'rgba(0,0,0,0.0)');
@@ -75,17 +74,14 @@ function draw(){
     ctx.fill();
   }
 
-  // draw shooting stars (short quick streaks)
+  // draw shooting stars
   for(let i = shooting.length-1; i>=0; i--){
     const sh = shooting[i];
-    // move
     sh.x += sh.vx;
     sh.y += sh.vy;
     sh.life++;
-    // fade alpha
     sh.alpha = Math.max(0, 1 - sh.life / sh.maxLife);
 
-    // draw a short gradient trail behind the head
     const tx = sh.x - sh.vx * sh.len;
     const ty = sh.y - sh.vy * sh.len;
     const grad = ctx.createLinearGradient(sh.x, sh.y, tx, ty);
@@ -100,60 +96,15 @@ function draw(){
     ctx.lineTo(tx, ty);
     ctx.stroke();
 
-    // small bright head
+    // bright head
     ctx.beginPath();
     ctx.fillStyle = `rgba(255,255,255,${1 * sh.alpha})`;
     ctx.arc(sh.x, sh.y, 1.8, 0, Math.PI*2);
     ctx.fill();
 
-    // remove when finished or out of bounds
     if(sh.life > sh.maxLife || sh.x < -50 || sh.y > h + 50) shooting.splice(i,1);
   }
 
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
-
-/* ===== 3D Photo Popup & Loading Animation ===== */
-
-const photoModal = document.getElementById('photoModal');
-const loadingScreen = document.getElementById('loadingScreen');
-const mainContent = document.getElementById('mainContent');
-const photoImage = document.getElementById('photoImage');
-
-// Check if user has seen the popup before
-const POPUP_SEEN_KEY = 'njabuloLinkTreeVisited';
-
-function closePhotoModal() {
-  photoModal.classList.add('hidden');
-  showLoadingAnimation();
-}
-
-function showLoadingAnimation() {
-  loadingScreen.classList.remove('hidden');
-  
-  // Rotate icons for 2.5 seconds then fade out
-  setTimeout(() => {
-    loadingScreen.classList.add('hidden');
-    mainContent.classList.add('fade-in');
-    mainContent.classList.remove('fade-out');
-    localStorage.setItem(POPUP_SEEN_KEY, 'true');
-  }, 2500);
-}
-
-// Initialize on page load
-window.addEventListener('load', () => {
-  const hasVisited = localStorage.getItem(POPUP_SEEN_KEY);
-  
-  if (!hasVisited) {
-    // Show photo popup first
-    photoModal.classList.remove('hidden');
-    
-    // Close modal on click anywhere
-    photoModal.addEventListener('click', closePhotoModal);
-  } else {
-    // Skip to showing content if already visited
-    mainContent.classList.remove('fade-out');
-    mainContent.style.opacity = '1';
-  }
-});
