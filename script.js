@@ -113,3 +113,19 @@ function draw(){
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
+
+
+// ===== Pop the old rotating icons out from the verification badge =====
+window.addEventListener('load', () => {
+  const icons = document.querySelectorAll('.fly-icon');
+
+  // Wait 2 seconds, then release them one by one
+  setTimeout(() => {
+    icons.forEach((icon, index) => {
+      setTimeout(() => {
+        icon.classList.add('show');
+      }, index * 220); // 220ms between each icon
+    });
+  }, 2000);
+});
+```
